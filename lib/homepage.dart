@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dateconvert.dart';
+import 'viewentry.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -90,11 +92,12 @@ class _HomePageState extends State<HomePage> {
           return ListView.builder(itemCount: snapshot.data.documents.length, 
           itemBuilder: (context, index) {
             var post = snapshot.data.documents[index];
+            print(DateTime.now().millisecondsSinceEpoch);
             return ListTile(
               leading: Column(mainAxisAlignment: MainAxisAlignment.center, 
-                children:[Text(post['date'].toString())]),
+                children:[Text(convertDate(post['date']))]),
               trailing: Text(post['items'].toString()),
-              onTap: () => onTapped(/*journal, index*/)
+              onTap: () => onTapped(post)
             );
           });
         }
@@ -126,15 +129,45 @@ class _HomePageState extends State<HomePage> {
     }*/
   }
 
-    void onTapped(/*journal, index*/) {
+  void onTapped(post) {
     Navigator.pushNamed(context, 
       "/viewEntry", 
-      /*arguments: JournalArguments(
-        journal.entries[index].title, 
-        journal.entries[index].body,
-        journal.entries[index].rating,
-        journal.entries[index].dateTime
-      )*/
+      arguments: WasteArguments(
+        post['date'], 
+        post['items'],
+        post['latitude'],
+        post['longitude'],
+        post['photo'],
+      )
     );
   }
+  /*String convertDate(date) {
+    String weekday;
+    String month;
+    switch(DateTime.fromMillisecondsSinceEpoch(date).weekday) {
+      case 1: {weekday = "Monday";break;}
+      case 2: {weekday = "Tuesday";break;}
+      case 3: {weekday = "Wednesday";break;}
+      case 4: {weekday = "Thursday";break;}
+      case 5: {weekday = "Friday";break;}
+      case 6: {weekday = "Saturday";break;}
+      case 7: {weekday = "Sunday";break;}
+    }
+    switch(DateTime.fromMillisecondsSinceEpoch(date).month) {
+      case 1: {month = "January";break;}
+      case 2: {month = "February";break;}
+      case 3: {month = "March";break;}
+      case 4: {month = "April";break;}
+      case 5: {month = "May";break;}
+      case 6: {month = "June";break;}
+      case 7: {month = "July";break;}
+      case 8: {month = "August";break;}
+      case 9: {month = "September";break;}
+      case 10: {month = "October";break;}
+      case 11: {month = "November";break;}
+      case 12: {month = "December";break;}
+    }
+
+    return "$weekday, $month ${DateTime.fromMillisecondsSinceEpoch(date).day}";
+  }*/
 }

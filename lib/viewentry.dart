@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dateconvert.dart';
 
 class ViewEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    //final JournalArguments args = ModalRoute.of(context).settings.arguments;
-
+    final WasteArguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text("Wasteagram"),
@@ -13,18 +13,24 @@ class ViewEntry extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("Monday, March 8 2020", style: TextStyle(fontSize: 32)),Placeholder(), Text("Items: 7"), Text("Geolocation")]
+          children: [
+            Text(convertDateYear(args.date), style: TextStyle(fontSize: 32)),
+            Placeholder(), 
+            Text("Items: ${args.items}"), 
+            Text("(${args.latitude}, ${args.longitude})"),
+          ]
         ),
       ),
     );
   }
 }
 
-class JournalArguments {
-  final String title;
-  final String body;
-  final int rating;
-  final int dateTime;
+class WasteArguments {
+  final int date;
+  final int items;
+  final double latitude;
+  final double longitude;
+  final String photo;
 
-  JournalArguments(this.title, this.body, this.rating, this.dateTime);
+  WasteArguments(this.date, this.items, this.latitude, this.longitude, this.photo);
 }
