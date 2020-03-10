@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'homepage.dart';
+import 'viewentry.dart';
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        "/": (context) => HomePage(title: 'Wasteagram - '),
+        //"/createEntry": (context) => CreateEntry(),
+        "/viewEntry": (context) => ViewEntry(),
+      },
     );
   }
 }
