@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'viewentry.dart';
+import 'createdata.dart';
 
 class App extends StatelessWidget {
   // This widget is the root of your application.
@@ -22,7 +23,7 @@ class App extends StatelessWidget {
       ),
       routes: {
         "/": (context) => HomePage(title: 'Wasteagram - '),
-        //"/createEntry": (context) => CreateEntry(),
+        "/createEntry": (context) => CreateEntry(),
         "/viewEntry": (context) => ViewEntry(),
       },
     );

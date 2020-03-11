@@ -50,7 +50,8 @@ class _HomePageState extends State<HomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
+    return wasteScaffold();
+    /*Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    );*/
   }
   Widget locationText() {
     if (locationData == null){
@@ -89,23 +90,55 @@ class _HomePageState extends State<HomePage> {
       stream: Firestore.instance.collection('wasteList').snapshots(),
       builder: (content, snapshot) {
         if(snapshot.hasData) {
-          return ListView.builder(itemCount: snapshot.data.documents.length, 
-          itemBuilder: (context, index) {
-            var post = snapshot.data.documents[index];
-            print(DateTime.now().millisecondsSinceEpoch);
-            return ListTile(
-              leading: Column(mainAxisAlignment: MainAxisAlignment.center, 
-                children:[Text(convertDate(post['date']))]),
-              trailing: Text(post['items'].toString()),
-              onTap: () => onTapped(post)
-            );
-          });
+          return Scaffold(
+            appBar: AppBar(
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+              title: Center(child: Text(widget.title + "${snapshot.data.documents.length.toString()}")),
+            ),
+            body: Container(
+              child: LayoutBuilder(builder: (context, constraints) {
+                return ListView.builder(itemCount: snapshot.data.documents.length, 
+                  itemBuilder: (context, index) {
+                    var post = snapshot.data.documents[index];
+                    print(DateTime.now().millisecondsSinceEpoch);
+                    return ListTile(
+                      leading: Column(mainAxisAlignment: MainAxisAlignment.center, 
+                      children:[Text(convertDate(post['date'])),]),
+                      trailing: Text(post['items'].toString()),
+                      onTap: () => onTapped(post)
+                    );
+                  }
+                );
+                }
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {Navigator.pushNamed(context, "/createEntry");},
+              child: Icon(Icons.add),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
+          );
         }
         else {
-          return Center(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: [CircularProgressIndicator() ]
+          return Scaffold(
+            appBar: AppBar(
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+              title: Center(child: Text(widget.title + "${snapshot.data.documents.length.toString()}")),
             ),
+            body: Container( child: Center(
+              child: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: [CircularProgressIndicator() ]
+              ),
+              ),
+            ),
+                        floatingActionButton: FloatingActionButton(
+              onPressed: _incrementCounter,
+              tooltip: 'Increment',
+              child: Icon(Icons.add),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
           );
         }
       }
@@ -141,33 +174,7 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
-  /*String convertDate(date) {
-    String weekday;
-    String month;
-    switch(DateTime.fromMillisecondsSinceEpoch(date).weekday) {
-      case 1: {weekday = "Monday";break;}
-      case 2: {weekday = "Tuesday";break;}
-      case 3: {weekday = "Wednesday";break;}
-      case 4: {weekday = "Thursday";break;}
-      case 5: {weekday = "Friday";break;}
-      case 6: {weekday = "Saturday";break;}
-      case 7: {weekday = "Sunday";break;}
-    }
-    switch(DateTime.fromMillisecondsSinceEpoch(date).month) {
-      case 1: {month = "January";break;}
-      case 2: {month = "February";break;}
-      case 3: {month = "March";break;}
-      case 4: {month = "April";break;}
-      case 5: {month = "May";break;}
-      case 6: {month = "June";break;}
-      case 7: {month = "July";break;}
-      case 8: {month = "August";break;}
-      case 9: {month = "September";break;}
-      case 10: {month = "October";break;}
-      case 11: {month = "November";break;}
-      case 12: {month = "December";break;}
-    }
+  /*Widget hasData() {
 
-    return "$weekday, $month ${DateTime.fromMillisecondsSinceEpoch(date).day}";
   }*/
 }
