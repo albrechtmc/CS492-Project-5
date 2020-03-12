@@ -15,7 +15,7 @@ class ViewEntry extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(convertDateYear(args.date), style: TextStyle(fontSize: 32)),
-            Placeholder(), 
+            Expanded(child: Image.network(args.photo)), 
             Text("Items: ${args.items}"), 
             Text("(${args.latitude}, ${args.longitude})"),
           ]
