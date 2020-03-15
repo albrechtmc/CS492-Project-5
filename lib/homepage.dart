@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
 import 'dateconvert.dart';
-import 'viewentry.dart';
+//import 'viewentry.dart';
+import 'models/postEntry.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -31,47 +32,18 @@ class _HomePageState extends State<HomePage> {
   }
   int _counter = 0;
 
-  void _incrementCounter() {
+  /*void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return wasteScaffold();
-    /*Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Center(child: Text(widget.title + "1")),
-      ),
-      body: Container(
-        child: LayoutBuilder(builder: (context, constraints) {
-          return wasteScaffold();
-        },
-        )
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
-    );*/
   }
-  Widget locationText() {
+  
+    Widget locationText() {
     if (locationData == null){
       return Center(child: CircularProgressIndicator());
     } else {
@@ -87,10 +59,11 @@ class _HomePageState extends State<HomePage> {
   }
   Widget wasteScaffold() {
     return StreamBuilder(
-      stream: Firestore.instance.collection('wasteList').snapshots(),
+      
+      stream: Firestore.instance.collection('wasteList').orderBy('date', descending: true).snapshots(),
       builder: (content, snapshot) {
-        if(snapshot.hasData) {
-          return Scaffold(
+        if(snapshot.data.documents.length > 0) {
+                    return Scaffold(
             appBar: AppBar(
               // Here we take the value from the MyHomePage object that was created by
               // the App.build method, and use it to set our appbar title.
@@ -113,53 +86,44 @@ class _HomePageState extends State<HomePage> {
                 }
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {Navigator.pushNamed(context, "/createEntry");},
-              child: Icon(Icons.add),
+            floatingActionButton: Semantics(
+              button: true,
+              enabled: true,
+              onTapHint: 'Create a new post',
+              child: FloatingActionButton(
+                onPressed: () {Navigator.pushNamed(context, "/createEntry");},
+                child: Icon(Icons.add),
+              ),
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
           );
         }
         else {
-          return Scaffold(
+          return new Scaffold(
             appBar: AppBar(
-              // Here we take the value from the MyHomePage object that was created by
-              // the App.build method, and use it to set our appbar title.
-              title: Center(child: Text(widget.title + "${snapshot.data.documents.length.toString()}")),
+              title: Center(child: Text(widget.title + "0")),
             ),
-            body: Container( child: Center(
+            body: new Container( child: Center(
               child: Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: [CircularProgressIndicator() ]
+              children: [CircularProgressIndicator()]
               ),
               ),
             ),
-                        floatingActionButton: FloatingActionButton(
-              onPressed: _incrementCounter,
-              tooltip: 'Increment',
-              child: Icon(Icons.add),
+            floatingActionButton: Semantics(
+              button: true,
+              enabled: true,
+              onTapHint: 'Create a new post',
+              child: FloatingActionButton(
+                onPressed: () {Navigator.pushNamed(context, "/createEntry");},
+                child: Icon(Icons.add),
+              ),
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // This trailing comma makes auto-formatting nicer for build methods.
           );
         }
       }
     );
-    /*if(/*list.entries.length == 0*/false) {
-      return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator() ]
-        ),
-      );
-    }
-    else {
-      return ListView.builder(itemCount: 1, itemBuilder: (context, index) {
-        return ListTile(
-          leading: Column(mainAxisAlignment: MainAxisAlignment.center, 
-            children:[Text("Monday, March 8")]),
-          trailing: Text("7"),
-          onTap: () => onTapped(/*journal, index*/)
-        );
-      });
-    }*/
+
   }
 
   void onTapped(post) {
